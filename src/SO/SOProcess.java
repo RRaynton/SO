@@ -7,14 +7,13 @@ public class SOProcess {
     private int timeToExecute;
     private static int countIndex = 0;
 
-    public SOProcess(String id, int sizeInMemory, SOPriority priority, int timeToExecute) {
-        this.id = "P"+countIndex;
+    public SOProcess(int sizeInMemory, SOPriority priority, int timeToExecute) {
+        this.id = "P"+countIndex;   //O id do processo será P0, P1, P2 e assim por diante   
+        countIndex++;   //Faz com que o id do próximo processo seja o deste acrescido de 1
         this.sizeInMemory = sizeInMemory;
         this.priority = priority;
         this.timeToExecute = timeToExecute;
-        countIndex++;
     }
-
     public String getId() {
         return id;
     }
