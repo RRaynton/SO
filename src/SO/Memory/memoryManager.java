@@ -4,9 +4,11 @@ import SO.SOProcess;
 
 public class memoryManager {
     private SOProcess[] phisicalMemory; //A memoria física é um array de processos
+    private Strategy strategy;
 
-    public memoryManager(int lengthMem) {
+    public memoryManager(int lengthMem, Strategy strategy) {
         this.phisicalMemory = new SOProcess[lengthMem]; //A memória comporta "lengthMem" processos
+        this.strategy = strategy;
         printStatusMemory();                            //Escreve a memória vazia pra verificar se está correta.
     }
 
@@ -40,14 +42,17 @@ public class memoryManager {
         }
     }
 
-    public void writeProcess(Strategy strategy, SOProcess p){
-        if(strategy.equals(Strategy.FIRST_FIT)){    //Caso a estratégia escolhida seja a First Fit
+    public void writeProcess(SOProcess p){
+        if(this.strategy.equals(Strategy.FIRST_FIT)){    //Caso a estratégia escolhida seja a First Fit
             writeWithFirstFit(p);   //Escreve com First Fit
+        }else if(this.strategy.equals(Strategy.BEST_FIT)){    //Caso a estratégia escolhida seja a Best Fit
+            writeWithBestFit(p);   //Escreve com Best Fit
+        }else if(this.strategy.equals(Strategy.WROST_FIT)){    //Caso a estratégia escolhida seja a Best Fit
+            writeWithWrostFit(p);   //Escreve com Best Fit
         }
     }
 
     private void writeWithFirstFit(SOProcess p){
-
         boolean processFitsInSpace=true;    //Indica se o processo cabe ou não na memória
         for(int i=0; i<phisicalMemory.length; i++){ //Percorre toda a memoria
             if(phisicalMemory[i] == null ){         //Se o espaço analisado estiver vazio
@@ -75,5 +80,127 @@ public class memoryManager {
         }
         printStatusMemory();    //Escreve como ficou a memória após a escrita
     }
+    
+    private void writeWithBestFit(SOProcess p){
+        boolean oneProcessFit=false;        //Indica se houve pelo menos um espaço em que ele coube
+        int indiceBestFit=0;                //Indica o índice onde melhor coube o processo
+        int realRestOfMem=phisicalMemory.length;    //Indica quanto espaço vazio ficará a frente do processo
 
+        for(int i=phisicalMemory.length-1; i>=p.getSizeInMemory()-1; i--){ //Percorre toda a memoria
+            boolean processFitsInSpace=true;    //Indica se o processo cabe ou não na memória
+            if(phisicalMemory[i] == null ){         //Se o espaço analisado estiver vazio
+                int endOfProcess = i-(p.getSizeInMemory()-1);   //O fim do processo estará no local encontrado mais o tamano do processo
+                if(endOfProcess>=0){
+                    for(int j=i; j>=endOfProcess; j--){     //Percorre deste espaço até o fim do processo
+                                                            //Exemplo: Pra escrever um processo de tamanho 4, ao verificar
+                                                            //que a posição 12 da memória está vazia, verifica-se se as posições
+                                                            //até antes do 16 também estão vazias: Posições (12,13,14,15)
+                        if(phisicalMemory[j] != null){ //Se não estiver vazio
+                            processFitsInSpace=false;   //Informa que o processo não cabe neste espaço
+                            i=j;  //Passa a procurar espaços vazios depois do local que já possui processo.
+                            break;  //E finaliza o for
+                        }
+                    }
+                    if(processFitsInSpace){ //Caso o processo caiba no espaço
+                        int leftRemaing = 0;   //O espaço restante após o processo inicia em zero
+                        int rightRemaing = 0;   //O espaço restante após o processo inicia em zero
+                        while(phisicalMemory[endOfProcess-leftRemaing] == null){
+                            if(endOfProcess-leftRemaing == 0)
+                                break;
+                                                    //Caso este espaço esteja vazio e não chegou ao fim da memória
+                            leftRemaing++;  //Aumente um ao espaço vazio restante
+                        }
+                        while(phisicalMemory[i+rightRemaing] == null){
+                            if(i+rightRemaing == phisicalMemory.length-1)
+                                break;
+                                                    //Caso este espaço esteja vazio e não chegou ao fim da memória
+                            rightRemaing++;  //Aumente um ao espaço vazio restante
+                        }
+                        if(leftRemaing+rightRemaing<=realRestOfMem){  //Se o espaço vazio restante for menor que o menor já visto
+                            realRestOfMem=leftRemaing+rightRemaing;  //O menor já visto então será esse
+                            indiceBestFit=i;                    //Salva o indice desse
+                            oneProcessFit=true;                 //Indica que um processo coube na memória
+                        }
+                    }
+                }
+            }
+        }
+
+        if(oneProcessFit){  //Caso após percorrer toda a memória, pelo menos um coube
+            for(int k=indiceBestFit; k>=indiceBestFit-(p.getSizeInMemory()-1); k--){   //Escreve um a um
+                this.phisicalMemory[k]=p;                         //o processo na memória
+            }
+            System.out.println("Processo inserido na memória"); //Informa que o processo foi devidamente escrito
+        }else{                                                    //Caso não caiba na memória
+            System.out.println("Não há espaço na memória");     //Informa que o processo não coube
+        }
+        printStatusMemory();    //Escreve como ficou a memória após a escrita
+    }
+
+    private void writeWithWrostFit(SOProcess p){
+        boolean oneProcessFit=false;        //Indica se houve pelo menos um espaço em que ele coube
+        int indiceBestFit=0;                //Indica o índice onde melhor coube o processo
+        int realRestOfMem=0;    //Indica quanto espaço vazio ficará a frente do processo
+
+        for(int i=phisicalMemory.length-1; i>=p.getSizeInMemory()-1; i--){ //Percorre toda a memoria
+            boolean processFitsInSpace=true;    //Indica se o processo cabe ou não na memória
+            if(phisicalMemory[i] == null ){         //Se o espaço analisado estiver vazio
+                int endOfProcess = i-(p.getSizeInMemory()-1);   //O fim do processo estará no local encontrado mais o tamano do processo
+                if(endOfProcess>=0){
+                    for(int j=i; j>=endOfProcess; j--){     //Percorre deste espaço até o fim do processo
+                                                            //Exemplo: Pra escrever um processo de tamanho 4, ao verificar
+                                                            //que a posição 12 da memória está vazia, verifica-se se as posições
+                                                            //até antes do 16 também estão vazias: Posições (12,13,14,15)
+                        if(phisicalMemory[j] != null){ //Se não estiver vazio
+                            processFitsInSpace=false;   //Informa que o processo não cabe neste espaço
+                            i=j;  //Passa a procurar espaços vazios depois do local que já possui processo.
+                            break;  //E finaliza o for
+                        }
+                    }
+                    if(processFitsInSpace){ //Caso o processo caiba no espaço
+                        int leftRemaing = 0;   //O espaço restante após o processo inicia em zero
+                        int rightRemaing = 0;   //O espaço restante após o processo inicia em zero
+                        while(phisicalMemory[endOfProcess-leftRemaing] == null){
+                            if(endOfProcess-leftRemaing == 0)
+                                break;
+                                                    //Caso este espaço esteja vazio e não chegou ao fim da memória
+                            leftRemaing++;  //Aumente um ao espaço vazio restante
+                        }
+                        while(phisicalMemory[i+rightRemaing] == null){
+                            if(i+rightRemaing == phisicalMemory.length-1)
+                                break;
+                                                    //Caso este espaço esteja vazio e não chegou ao fim da memória
+                            rightRemaing++;  //Aumente um ao espaço vazio restante
+                        }
+                        if(leftRemaing+rightRemaing>=realRestOfMem){  //Se o espaço vazio restante for maior que o maior já visto
+                            realRestOfMem=leftRemaing+rightRemaing;  //O maior já visto então será esse
+                            indiceBestFit=i;                    //Salva o indice desse
+                            oneProcessFit=true;                 //Indica que um processo coube na memória
+                        }
+                    }
+                }
+            }
+        }
+
+        if(oneProcessFit){  //Caso após percorrer toda a memória, pelo menos um coube
+            for(int k=indiceBestFit; k>=indiceBestFit-(p.getSizeInMemory()-1); k--){   //Escreve um a um
+                this.phisicalMemory[k]=p;                         //o processo na memória
+            }
+            System.out.println("Processo inserido na memória"); //Informa que o processo foi devidamente escrito
+        }else{                                                    //Caso não caiba na memória
+            System.out.println("Não há espaço na memória");     //Informa que o processo não coube
+        }
+        printStatusMemory();    //Escreve como ficou a memória após a escrita
+    }
+
+    public void deleteProcess(SOProcess p){
+        for(int i=0; i<phisicalMemory.length; i++){             //Percorre a memória
+            if(phisicalMemory[i].getId().equals(p.getId())){    //Se encontrar o Id do processo
+                for(int j=i; j<i+p.getSizeInMemory();j++){      //Percorre deste ponto até o tamanho do processo
+                    phisicalMemory[j] = null;                   //Apagando a memória nestas posições
+                }
+                break;                                          //Interrompe o for
+            }
+        }
+    }
 }
