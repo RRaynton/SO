@@ -17,8 +17,8 @@ For this, the file structure is as follow:
 The OS will run in this file. At the beginning, we'll create the processes that will be managed by the system. For this, the processes has an Id, a size, a priority and a time to be executed.
 ```
 SOProcess p1 = SystemOperation.systemCall(systemCallType.CREATE_PROCESS, //Cria um proceso
-                                              28,                         //De tamanho 28
-                                              SOPriority.BAIXA,           //Com prioridade baixa
-                                              500,                        //Que leva 500ms pra ser executado
-                                              Strategy.BEST_FIT);         //Define a estratégia a ser utilizada
+                                              28,                        //De tamanho 28
+                                              SOPriority.BAIXA,          //Com prioridade baixa
+                                              500,                       //Que leva 500ms pra ser executado
+                                              Strategy.BEST_FIT);        //Define a estratégia a ser utilizada
 ```
