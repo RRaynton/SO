@@ -5,8 +5,8 @@ This code implements an OS using some techniques to write process to memory or d
 # Folder Structure
 
 For this, the file structure is as follow:
-    - `Execute`: Main file where the system will run
-    - `SystemOperation`: This class will communicate with the system devices
+- `Execute`: Main file where the system will run
+- `SystemOperation`: This class will communicate with the system devices
 - `Memory`
     - `MemoryManager`: This class will manage system memory
 - `CPU`
