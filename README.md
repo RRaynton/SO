@@ -1,6 +1,6 @@
 # Getting Started
 
-This code implements an OS using some techniques to write process to memory or delete process from this memory.
+This code implements an OS using some techniques to write process to memory or delete process from this memory. The file structure is on src/SO
  
 # Folder Structure
 
