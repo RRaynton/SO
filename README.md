@@ -17,22 +17,22 @@ For this, the file structure is as follow:
 The OS will run in this file. At the beginning, we'll create the processes that will be managed by the system. For this, the processes has an Id, a size, a priority and a time to be executed.
 ```
 SOProcess p1 = SystemOperation.systemCall(systemCallType.CREATE_PROCESS, //Cria um proceso
-                                              28,                         //De tamanho 28
-                                              SOPriority.BAIXA,           //Com prioridade baixa
-                                              500,                        //Que leva 500ms pra ser executado
-                                              Strategy.BEST_FIT);         //Define a estratégia a ser utilizada
+                                        28,                 //De tamanho 28
+                                        SOPriority.BAIXA,   //Com prioridade baixa
+                                        500,                //Que leva 500ms pra ser executado
+                                        Strategy.BEST_FIT); //Define a estratégia a ser utilizada
 ```
 
 The process p1 has size 28, Low priority and 500ms to be executed. The last parameter define the strategy adopted by the memory manager.
 
 After this, we can write the processes in memory. For that, we use this code:
 ```
-SystemOperation.systemCall(systemCallType.WRITE_PROCESS, p1);            //Escreve o processo p1 na memória
+SystemOperation.systemCall(systemCallType.WRITE_PROCESS, p1); //Escreve o processo p1 na memória
 ```
 
 It is also possible to delete processes from  memory by using the code below:
 ```
-SystemOperation.systemCall(systemCallType.DELETE_PROCESS, p2);           //Deleta o processo p2
+SystemOperation.systemCall(systemCallType.DELETE_PROCESS, p2); //Deleta o processo p2
 ```
 That code will be delete p2 from memory.
 
