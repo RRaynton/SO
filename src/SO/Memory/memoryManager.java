@@ -1,9 +1,14 @@
 package SO.Memory;
 
+import java.util.Hashtable;
+
 import SO.SOProcess;
 
 public class memoryManager {
     private SOProcess[] phisicalMemory; //A memoria física é um array de processos
+    private Hashtable<String, FrameMemory> logicalMemory;   //A memória lógica é uma cópia da memoria física
+                                                            //que é utilizada para verificar tudo da memória física
+                                                            //sem necessariamente acessa-la.
     private Strategy strategy;
 
     public memoryManager(int lengthMem, Strategy strategy) {

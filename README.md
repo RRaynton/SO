@@ -1,18 +1,24 @@
-## Getting Started
+# Getting Started
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+This code implements an OS using some techniques to write process to memory or delete process from this memory.
+ 
+# Folder Structure
 
-## Folder Structure
+For this, the file structure is as follow:
+ - `Execute`: Main file where the system will run
+ - `SystemOperation`: This class will communicate with the system devices
+- `Memory`
+ - `MemoryManager`: This class will manage system memory
+- `CPU`
+ - `CpuManager`: This class will manage the procesor cores
 
-The workspace contains two folders by default, where:
+## Execute
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+The OS will run in this file. At the beginning, we'll create the processes that will be managed by the system. For this, the processes has an Id, a size, a priority and a time to be executed.
+```
+SOProcess p1 = SystemOperation.systemCall(systemCallType.CREATE_PROCESS, //Cria um proceso
+                                              28,                         //De tamanho 28
+                                              SOPriority.BAIXA,           //Com prioridade baixa
+                                              500,                        //Que leva 500ms pra ser executado
+                                              Strategy.BEST_FIT);         //Define a estratégia a ser utilizada
+```
